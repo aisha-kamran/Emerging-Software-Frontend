@@ -1,17 +1,35 @@
-# Node.js / Frontend projects
+# ==========================
+# 🛑 Folders to Ignore (Upload nahi honge)
+# ==========================
+
+# 1. Virtual Environments (Python)
+venv/
+ve/
+.venv/
+
+# 2. Node Modules (Admin Panel ke liye BOHT Zaroori)
 node_modules/
+Admin/node_modules/
+**/node_modules/
+
+# 3. Build Folders
 dist/
 build/
 
-# Environment files
-.env
+# 4. Python Cache
+__pycache__/
+*.py[cod]
 
-# Logs
-*.log
+# ==========================
+# 🐍 Backend Files (Kyunke ye Frontend Repo hai)
+# ==========================
+# Agar ap chahti hain ke ye files laptop par rahain par GitHub par na jayen:
+app.py
+requirements.txt
+PROJECT_README.txt
 
-# OS files
+# ==========================
+# ⚙️ System Files
+# ==========================
 .DS_Store
-Thumbs.db
-
-# VSCode
-.vscode/
+.env
