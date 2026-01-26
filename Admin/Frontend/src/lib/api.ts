@@ -1,10 +1,10 @@
 const API_URL = 'http://127.0.0.1:8000';
 
 export const api = {
-  getToken: () => localStorage.getItem('token'),
+  getToken: () => sessionStorage.getItem('token'),
   
   getHeaders: () => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     return {
       'Content-Type': 'application/json',
       ...(token ? { 'Authorization': `Bearer ${token}` } : {}),

@@ -25,8 +25,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const initAuth = async () => {
-      const token = localStorage.getItem('token');
-      const savedUser = localStorage.getItem('user_data');
+      // 👇 Change 1: localStorage -> sessionStorage
+      const token = sessionStorage.getItem('token');
+      const savedUser = sessionStorage.getItem('user_data');
       
       if (token && savedUser) {
         try {
@@ -43,7 +44,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     try {
       const { access_token } = await api.login(email, password);
-      localStorage.setItem('token', access_token);
+      
+      // 👇 Change 2: localStorage -> sessionStorage
+      sessionStorage.setItem('token', access_token);
 
       const admins = await api.fetchAdmins();
       const currentUser = admins.find((u: any) => u.email === email);
@@ -60,7 +63,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         token: access_token
       };
 
-      localStorage.setItem('user_data', JSON.stringify(userData));
+      // 👇 Change 3: localStorage -> sessionStorage
+      sessionStorage.setItem('user_data', JSON.stringify(userData));
       setUser(userData);
       return true;
 
@@ -71,8 +75,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user_data');
+    // 👇 Change 4: localStorage -> sessionStorage
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user_data');
     setUser(null);
   };
 
