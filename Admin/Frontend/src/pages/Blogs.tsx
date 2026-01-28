@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Search } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, FileText } from 'lucide-react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import AdminLayout from '@/components/layout/AdminLayout';
 import { Modal, ConfirmModal } from '@/components/ui/Modal';
 import { useToastNotification } from '@/components/ui/ToastNotification';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 
-// Interface Update
+// Interface
 interface BlogPost {
   id: number;
   title: string;
   content: string;
   author: string;
   status: string;
-  created_at: string; // Backend sends snake_case
+  created_at: string;
 }
 
 const Blogs = () => {
@@ -22,7 +24,7 @@ const Blogs = () => {
   
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,20 +36,35 @@ const Blogs = () => {
   const [content, setContent] = useState('');
   const [status, setStatus] = useState('draft');
 
-  // 1. Fetch Blogs (Updated Logic)
+  // --- EDITOR SETTINGS ---
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{'list': 'ordered'}, {'list': 'bullet'}],
+      ['link', 'image'],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header', 'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'link', 'image'
+  ];
+
+  // --- Load Blogs ---
   const loadBlogs = async () => {
     setLoading(true);
     try {
       const data = await api.fetchBlogs();
-      // Data ko set karne se pehle check karein
       if (Array.isArray(data)) {
         setBlogs(data);
       } else {
         setBlogs([]);
       }
     } catch (error) {
-      console.error("Blogs Fetch Error:", error);
-      showToast('error', 'Failed to fetch blogs');
+      console.error("Fetch Error:", error);
+      setBlogs([]);
     } finally {
       setLoading(false);
     }
@@ -57,7 +74,7 @@ const Blogs = () => {
     loadBlogs();
   }, []);
 
-  // ... (Baaki handlers same rahenge: OpenModal, HandleSubmit etc.) ...
+  // --- Handlers ---
   const openCreateModal = () => {
     setSelectedBlog(null);
     setTitle('');
@@ -81,13 +98,17 @@ const Blogs = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !content.trim()) return;
+    if (!title.trim()) {
+        showToast('error', 'Title is required');
+        return;
+    }
 
     const payload = {
       title,
       content,
       status,
-      author: user?.email || user?.full_name || 'Admin'
+      author: user?.full_name || 'Admin',
+      created_at: new Date().toISOString()
     };
 
     try {
@@ -117,134 +138,135 @@ const Blogs = () => {
     }
   };
 
-  // Safe Date Formatting
-  const formatDate = (dateString: string) => {
-    if (!dateString) return 'N/A';
-    try {
-      return new Date(dateString).toLocaleDateString();
-    } catch (e) {
-      return 'Invalid Date';
-    }
-  };
-
   const filteredBlogs = blogs.filter(blog =>
-    blog.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    blog.author?.toLowerCase().includes(searchTerm.toLowerCase())
+    blog.title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const formatDate = (dateString: string) => {
+    try { return new Date(dateString).toLocaleDateString(); } catch { return 'N/A'; }
+  };
+
   return (
-    <AdminLayout title="Blog Management" subtitle="Create, edit, and manage blog posts">
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+    <AdminLayout title="Blog Management" subtitle="Create rich content blogs">
+      
+      {/* Top Bar */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6 justify-between items-center">
+        <div className="relative w-full sm:w-96">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search blogs..."
-            className="input-field pl-10"
+            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-blue-500"
           />
         </div>
-        <button onClick={openCreateModal} className="btn btn-primary">
+        <button onClick={openCreateModal} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto justify-center">
           <Plus className="w-4 h-4" />
-          Create Blog
+          Create New Blog
         </button>
       </div>
 
-      <div className="stat-card overflow-hidden p-0">
+      {/* Table */}
+      <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-lg">
         <div className="overflow-x-auto">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th className="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                 <tr><td colSpan={5} className="text-center py-8">Loading data from server...</td></tr>
-              ) : filteredBlogs.length === 0 ? (
-                <tr><td colSpan={5} className="text-center py-8">No blogs found</td></tr>
-              ) : (
+            <table className="w-full text-left text-gray-400">
+                <thead className="bg-gray-800 text-gray-200 uppercase text-xs">
+                <tr>
+                    <th className="px-6 py-4">Title</th>
+                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4">Date</th>
+                    <th className="px-6 py-4 text-right">Actions</th>
+                </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-800">
+                {loading ? <tr><td colSpan={4} className="text-center py-8">Loading...</td></tr> : 
                 filteredBlogs.map((blog) => (
-                  <tr key={blog.id}>
-                    <td>
-                      <div>
-                        {/* Safe Access using ?. */}
-                        <p className="font-medium text-foreground">{blog?.title || 'No Title'}</p>
-                        <p className="text-sm text-muted-foreground truncate max-w-xs">
-                          {blog?.content?.substring(0, 50)}...
-                        </p>
-                      </div>
-                    </td>
-                    <td className="text-muted-foreground">{blog?.author || 'Unknown'}</td>
-                    <td>
-                      <span className={`badge ${blog?.status === 'published' ? 'badge-success' : 'badge-warning'}`}>
-                        {blog?.status || 'draft'}
-                      </span>
-                    </td>
-                    <td className="text-muted-foreground">
-                        {/* Backend sends created_at (snake_case) */}
-                        {formatDate(blog?.created_at)}
-                    </td>
-                    <td>
-                      <div className="flex justify-end gap-2">
-                        <button onClick={() => openEditModal(blog)} className="btn btn-ghost p-2">
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button onClick={() => openDeleteModal(blog)} className="btn btn-ghost p-2 text-destructive hover:bg-destructive/10">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                    <tr key={blog.id} className="hover:bg-gray-800/50">
+                        <td className="px-6 py-4 text-white font-medium max-w-xs truncate">{blog.title}</td>
+                        <td className="px-6 py-4">
+                            <span className={`px-2 py-1 rounded text-xs ${blog.status === 'published' ? 'bg-green-900 text-green-300' : 'bg-yellow-900 text-yellow-300'}`}>
+                                {blog.status}
+                            </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">{formatDate(blog.created_at)}</td>
+                        <td className="px-6 py-4 text-right whitespace-nowrap">
+                            <button onClick={() => openEditModal(blog)} className="text-blue-400 mr-3 hover:text-blue-300"><Edit2 size={18}/></button>
+                            <button onClick={() => openDeleteModal(blog)} className="text-red-400 hover:text-red-300"><Trash2 size={18}/></button>
+                        </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
         </div>
       </div>
 
+      {/* --- RESPONSIVE MODAL FIX START --- */}
+{/* --- MODAL FIX (WEB & MOBILE) --- */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={selectedBlog ? 'Edit Blog' : 'Create Blog'}
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Title</label>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="input-field" placeholder="Enter title" />
+        <form onSubmit={handleSubmit} className="flex flex-col h-full">
+          
+          {/* 
+             Changes:
+             1. max-h-[85vh]: Height badha di taake web par bada dikhe.
+             2. [&::-webkit-scrollbar]:hidden: Scrollbar ko chupa diya (Clean Look).
+          */}
+          <div className="flex-1 overflow-y-auto max-h-[85vh] p-1 space-y-4 pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+              
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Title</label>
+                <input 
+                    type="text" 
+                    value={title} 
+                    onChange={(e) => setTitle(e.target.value)} 
+                    className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-blue-500" 
+                    placeholder="Blog Headline..." 
+                />
+              </div>
+
+              {/* Rich Text Editor */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Content (Images & Text)</label>
+                <div className="bg-white text-black rounded-lg overflow-hidden">
+                    <ReactQuill 
+                        theme="snow"
+                        value={content}
+                        onChange={setContent}
+                        modules={modules}
+                        formats={formats}
+                        // Web par height auto adjust hogi, mobile par fix rahegi
+                        className="h-64 sm:h-[350px] mb-12 sm:mb-10" 
+                        placeholder="Write here..."
+                    />
+                </div>
+              </div>
+
+              {/* Status */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Status</label>
+                <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-blue-500">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                </select>
+              </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Content</label>
-            <textarea value={content} onChange={(e) => setContent(e.target.value)} className="input-field min-h-[150px]" placeholder="Content..." />
+
+          {/* Footer Buttons */}
+          <div className="flex gap-3 pt-4 mt-4 border-t border-gray-700 shrink-0">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-4 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
+            <button type="submit" className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors font-medium">Save Blog</button>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Status</label>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="input-field">
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-            </select>
-          </div>
-          <div className="flex gap-3 pt-4">
-            <button type="button" onClick={() => setIsModalOpen(false)} className="btn btn-secondary flex-1">Cancel</button>
-            <button type="submit" className="btn btn-primary flex-1">{selectedBlog ? 'Update' : 'Create'}</button>
-          </div>
+
         </form>
       </Modal>
+      {/* --- RESPONSIVE MODAL FIX END --- */}
 
-      <ConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleDelete}
-        title="Delete Blog"
-        message="Are you sure?"
-        confirmLabel="Delete"
-        type="danger"
-      />
+      <ConfirmModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onConfirm={handleDelete} title="Delete Blog" message="Sure?" confirmLabel="Delete" type="danger" />
     </AdminLayout>
   );
 };

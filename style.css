@@ -3167,3 +3167,21 @@ nav.navbar {
         padding-right: 15px;
     }
 }
+/* --- MOBILE MENU LOGIN BUTTON FIX --- */
+@media (max-width: 768px) {
+    /* Mobile Menu mein Button ko full width aur center karein */
+    .nav-menu .admin-btn {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 1rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 12px;
+        text-align: center;
+    }
+    
+    /* Agar button text white nahi aa raha to force karein */
+    .nav-menu .admin-btn i {
+        margin-right: 8px;
+    }
+}
