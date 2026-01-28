@@ -79,34 +79,16 @@
         
         <!-- LEFT SIDE: Main Article -->
         <div class="blog-main-content">
-          <h1 class="blog-main-title">
-            HOW TO USE GENERATIVE AI TO CREATE MULTIMODAL MARKETING CAMPAIGNS
-          </h1>
+          <h1 class="blog-main-title" id="blogTitle">Loading...</h1>
 
-          <p class="blog-intro">
-            In an era where attention spans are short and competition for eyeballs is fierce, 
-            <a href="#" class="text-link">multimodal marketing</a>, using text, images, audio, and video together, 
-            is no longer optional. Generative AI, the technology that helps marketers create multimodal 
-            marketing campaigns with rich, cross-format content faster, cheaper, and more creatively than ever.
-          </p>
+          <p class="blog-intro" id="blogMeta" style="color:#d0d0d0;"></p>
 
-          <div class="blog-featured-image">
-            <!-- Image ka path check karein -->
-            <img src="../images/ai insights.jpg" alt="Generative AI" />
+          <div class="blog-featured-image" id="blogFeaturedWrap" style="display:none;">
+            <img id="blogFeaturedImage" src="" alt="Blog image" />
           </div>
 
-          <div class="blog-body-text">
-            <p>
-              Yahan aapka baaki article ka text ayega. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
-              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-            </p>
-            <br>
-            <h3>Why Multimodal Marketing Matters?</h3>
-            <p>
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-              Excepteur sint occaecat cupidatat non proident.
-            </p>
+          <div class="blog-body-text" id="blogContent">
+            <p style="color:#d0d0d0;">Loading blog details...</p>
           </div>
         </div>
 
@@ -117,19 +99,8 @@
             <div class="sidebar-line"></div>
           </div>
 
-          <div class="recent-posts-list">
-            <div class="recent-post-card">
-              <div class="rp-image">
-                <img src="../images/ai insights.jpg" alt="Thumb" />
-              </div>
-              <div class="rp-content">
-                <a href="#" class="rp-title">How To Use Generative AI To Create Multimodal Marketing Campaigns</a>
-                <div class="rp-meta">
-                  <span class="rp-author">by Emergi_Admin</span>
-                  <span class="rp-date">September 1, 2025</span>
-                </div>
-              </div>
-            </div>
+          <div class="recent-posts-list" id="recentPosts">
+            <div style="color:#d0d0d0; padding: 10px;">Loading...</div>
           </div>
         </aside>
 
@@ -148,6 +119,7 @@
 
     <!-- 👇 YE ZAROORI HAI: Javascript Link Add Kiya Hai -->
     <script src="../script.js"></script>
+    <script src="./blog-details.js"></script>
 
   </body>
 </html>

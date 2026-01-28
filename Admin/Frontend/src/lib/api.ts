@@ -94,7 +94,11 @@ export const api = {
       headers: api.getHeaders(),
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error('Failed to create blog');
+    if (!res.ok) {
+      let err: any = null;
+      try { err = await res.json(); } catch { /* ignore */ }
+      throw new Error(err?.detail || 'Failed to create blog');
+    }
     return res.json();
   },
 
@@ -104,7 +108,11 @@ export const api = {
       headers: api.getHeaders(),
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error('Failed to update blog');
+    if (!res.ok) {
+      let err: any = null;
+      try { err = await res.json(); } catch { /* ignore */ }
+      throw new Error(err?.detail || 'Failed to update blog');
+    }
     return res.json();
   },
 
@@ -113,7 +121,11 @@ export const api = {
       method: 'DELETE',
       headers: api.getHeaders(),
     });
-    if (!res.ok) throw new Error('Failed to delete blog');
+    if (!res.ok) {
+      let err: any = null;
+      try { err = await res.json(); } catch { /* ignore */ }
+      throw new Error(err?.detail || 'Failed to delete blog');
+    }
     return res.json();
   }
 };

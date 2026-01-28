@@ -108,7 +108,6 @@ const Blogs = () => {
       content,
       status,
       author: user?.full_name || 'Admin',
-      created_at: new Date().toISOString()
     };
 
     try {
@@ -122,7 +121,9 @@ const Blogs = () => {
       setIsModalOpen(false);
       loadBlogs();
     } catch (error) {
-      showToast('error', 'Operation failed');
+      const message =
+        error instanceof Error ? error.message : 'Operation failed';
+      showToast('error', message);
     }
   };
 
@@ -134,7 +135,9 @@ const Blogs = () => {
       setIsDeleteModalOpen(false);
       loadBlogs();
     } catch (error) {
-      showToast('error', 'Delete failed');
+      const message =
+        error instanceof Error ? error.message : 'Delete failed';
+      showToast('error', message);
     }
   };
 

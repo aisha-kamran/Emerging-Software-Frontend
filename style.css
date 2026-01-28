@@ -24,6 +24,12 @@ body {
     overflow-x: hidden;
 }
 
+/* Generic image responsiveness */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
 /* Homepage Background Image */
 .homepage-body {
     position: relative;
@@ -1517,6 +1523,27 @@ body {
     }
 }
 
+/* Global small-screen tweaks (applied site‑wide) */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    .nav-container {
+        padding: 0.75rem 1.5rem;
+    }
+
+    .logo-image {
+        height: 48px;
+    }
+
+    .section-title,
+    .mission-title,
+    .about-hero-title {
+        font-size: 2rem;
+    }
+}
+
 /* Why Choose Boxes Section */
 .why-choose-boxes {
     padding: 3rem 0 5rem;
@@ -2805,6 +2832,8 @@ body {
     background: linear-gradient(135deg, rgba(15, 15, 30, 0.95), rgba(99, 102, 241, 0.3));
     position: relative;
     overflow: hidden;
+    /* Fixed navbar ke neeche hide na ho, thoda top padding add */
+    padding-top: 100px;
 }
 
 .blogs-hero-section::before {
@@ -2827,7 +2856,7 @@ body {
 }
 
 .blogs-grid-section {
-    padding: 6rem 0;
+    padding: 4rem 0 6rem 0;
     background: transparent;
 }
 
@@ -3043,6 +3072,8 @@ nav.navbar {
 .blog-featured-image img {
     width: 100%;
     height: auto;
+    max-height: 540px; /* Image bohat lambi na ho */
+    object-fit: contain;
     border-radius: 12px;
     margin-bottom: 30px;
     border: 1px solid rgba(255,255,255,0.1);
@@ -3171,17 +3202,18 @@ nav.navbar {
 @media (max-width: 768px) {
     /* Mobile Menu mein Button ko full width aur center karein */
     .nav-menu .admin-btn {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        margin-top: 1rem;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        padding: 12px;
-        text-align: center;
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+        margin-top: 1rem !important;
+        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        padding: 12px !important;
+        text-align: center !important;
+        border-radius: 999px !important;
     }
     
     /* Agar button text white nahi aa raha to force karein */
     .nav-menu .admin-btn i {
-        margin-right: 8px;
+        margin-right: 8px !important;
     }
 }
