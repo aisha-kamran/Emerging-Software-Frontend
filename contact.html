@@ -18,9 +18,9 @@
                 <img src="images/logo.png" alt="Emerging Software" class="logo-image">
             </a>
             <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html" class="nav-link" data-i18n="nav.home">Home</a></li>
                 <li class="dropdown">
-                    <a href="index.html#services" class="nav-link">Services</a>
+                    <a href="index.html#services" class="nav-link" data-i18n="nav.services">Services</a>
                     <ul class="dropdown-menu">
                         <li><a href="services/email-marketing.html">Email Marketing Services</a></li>
                         <li><a href="services/digital-marketing.html">Digital Marketing</a></li>
@@ -39,7 +39,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="index.html#packages" class="nav-link">Our Packages</a>
+                    <a href="index.html#packages" class="nav-link" data-i18n="nav.packages">Our Packages</a>
                     <ul class="dropdown-menu">
                         <li><a href="our-packages/social-media-marketing.html">Social Media Marketing</a></li>
                         <li><a href="our-packages/email-marketing.html">Email Marketing</a></li>
@@ -49,18 +49,18 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#our-agency" class="nav-link">Our Agency</a>
+                    <a href="#our-agency" class="nav-link" data-i18n="nav.agency">Our Agency</a>
                     <ul class="dropdown-menu">
                         <li><a href="our-agency/about-us.html">About Us</a></li>
                     </ul>
                 </li>
-                <li><a href="blogs.html" class="nav-link">Blogs</a></li>
-                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><a href="blogs.html" class="nav-link" data-i18n="nav.blogs">Blogs</a></li>
+                <li><a href="contact.html" class="nav-link" data-i18n="nav.contact">Contact</a></li>
             </ul>
             <div class="nav-right">
                 <div class="flags">
-                    <img src="https://flagcdn.com/w40/us.png" alt="USA" class="flag">
-                    <img src="https://flagcdn.com/w40/sa.png" alt="Saudi" class="flag">
+                    <img src="https://flagcdn.com/w40/us.png" alt="USA" class="flag" data-lang="en">
+                    <img src="https://flagcdn.com/w40/sa.png" alt="Saudi" class="flag" data-lang="ar">
                 </div>
             </div>
             <div class="hamburger">
@@ -80,37 +80,38 @@
                 <!-- Left Side - Form -->
                 <div class="contact-form-side">
                     <div class="contact-form-box">
-                        <h3>PLEASE FILL OUT THE FORM BELOW AND SOMEONE FROM OUR TEAM WILL GET BACK TO YOU SHORTLY.</h3>
+                        <h3 data-i18n="contact.formTitle">PLEASE FILL OUT THE FORM BELOW AND SOMEONE FROM OUR TEAM WILL GET BACK TO YOU SHORTLY.</h3>
                         
-                        <form class="main-contact-form">
+                        <form class="main-contact-form" id="contactForm">
                             <div class="form-field">
-                                <label>Your name</label>
-                                <input type="text" placeholder="John Doe" required>
+                                <label data-i18n="contact.form.nameLabel">Your name</label>
+                                <input type="text" name="name" placeholder="John Doe" required>
                             </div>
                             
                             <div class="form-field">
-                                <label>Your email</label>
-                                <input type="email" placeholder="your@email.com" required>
+                                <label data-i18n="contact.form.emailLabel">Your email</label>
+                                <input type="email" name="email" placeholder="your@email.com" required>
                             </div>
                             
                             <div class="form-field">
-                                <label>Subject</label>
-                                <input type="text" placeholder="How can we help?" required>
+                                <label data-i18n="contact.form.subjectLabel">Subject</label>
+                                <input type="text" name="subject" placeholder="How can we help?" required>
                             </div>
                             
                             <div class="form-field">
-                                <label>Your message (optional)</label>
-                                <textarea rows="5" placeholder="Tell us more about your inquiry..."></textarea>
+                                <label data-i18n="contact.form.messageLabel">Your message (optional)</label>
+                                <textarea name="message" rows="5" placeholder="Tell us more about your inquiry..."></textarea>
                             </div>
                             
-                            <button type="submit" class="contact-submit-btn">SUBMIT</button>
+                            <button type="submit" class="contact-submit-btn" data-i18n="contact.form.submit">SUBMIT</button>
+                            <p id="contactStatus" style="margin-top:10px;font-size:0.9rem;"></p>
                         </form>
                     </div>
                 </div>
 
                 <!-- Right Side - Contact Info -->
                 <div class="contact-info-side">
-                    <h2>CONTACT EMERGING SOFTWARE!</h2>
+                    <h2 data-i18n="contact.heroTitle">CONTACT EMERGING SOFTWARE!</h2>
                     
                     <p class="contact-intro">We are here to help you achieve your digital marketing goals. If you have questions about our services, need help with your current digital strategy, or want to explore how we can collaborate to grow your business, our team is ready to help. At Emerging Software, we value personal contact and are dedicated to providing the highest level of support and guidance.</p>
                     
@@ -254,5 +255,69 @@
     </button>
 
     <script src="script.js"></script>
+    <script>
+      (function () {
+        const API_URL = 'http://127.0.0.1:8000';
+        const form = document.getElementById('contactForm');
+        const statusEl = document.getElementById('contactStatus');
+
+        if (!form) return;
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          if (statusEl) {
+            statusEl.style.color = '#ccc';
+            statusEl.textContent = 'Sending...';
+          }
+
+          const formData = new FormData(form);
+          const payload = {
+            name: formData.get('name') || '',
+            email: formData.get('email') || '',
+            subject: formData.get('subject') || '',
+            message: formData.get('message') || '',
+          };
+
+          try {
+            const res = await fetch(API_URL + '/contact', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok || data.success === false) {
+              const msg = data.detail || data.message || 'Failed to send message.';
+              if (statusEl) {
+                statusEl.style.color = '#f87171';
+                statusEl.textContent = msg;
+              } else {
+                alert(msg);
+              }
+              return;
+            }
+
+            if (statusEl) {
+              statusEl.style.color = '#4ade80';
+              statusEl.textContent = data.message || 'Message sent successfully!';
+            } else {
+              alert('Message sent successfully!');
+            }
+
+            form.reset();
+          } catch (err) {
+            const msg = (err && err.message) ? err.message : 'Network error. Please try again.';
+            if (statusEl) {
+              statusEl.style.color = '#f87171';
+              statusEl.textContent = msg;
+            } else {
+              alert(msg);
+            }
+          }
+        });
+      })();
+    </script>
 </body>
 </html>

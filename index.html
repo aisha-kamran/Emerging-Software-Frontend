@@ -266,10 +266,10 @@
           />
         </a>
         <ul class="nav-menu">
-          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="index.html" class="nav-link" data-i18n="nav.home">Home</a></li>
 
           <li class="dropdown">
-            <a href="#services" class="nav-link">Services</a>
+            <a href="#services" class="nav-link" data-i18n="nav.services">Services</a>
             <ul class="dropdown-menu">
               <li>
                 <a href="services/email-marketing.html"
@@ -308,7 +308,7 @@
             </ul>
           </li>
           <li class="dropdown">
-            <a href="#our-packages" class="nav-link">Our Packages</a>
+            <a href="#our-packages" class="nav-link" data-i18n="nav.packages">Our Packages</a>
             <ul class="dropdown-menu">
               <li>
                 <a href="our-packages/social-media-marketing.html"
@@ -328,19 +328,19 @@
             </ul>
           </li>
           <li class="dropdown">
-            <a href="#our-agency" class="nav-link">Our Agency</a>
+            <a href="#our-agency" class="nav-link" data-i18n="nav.agency">Our Agency</a>
             <ul class="dropdown-menu">
               <li><a href="our-agency/about-us.html">About Us</a></li>
             </ul>
           </li>
 
-          <li><a href="blogs/blogs.html" class="nav-link">Blogs</a></li>
-          <li><a href="contact.html" class="nav-link">Contact</a></li>
+          <li><a href="blogs/blogs.html" class="nav-link" data-i18n="nav.blogs">Blogs</a></li>
+          <li><a href="contact.html" class="nav-link" data-i18n="nav.contact">Contact</a></li>
 
           <!-- 👇 ADMIN LOGIN BUTTON ADDED HERE -->
           <li>
-            <a href="http://localhost:8080/login" target="_blank" class="admin-btn">
-              <i class="fa-solid fa-user-lock"></i> Login
+            <a href="http://localhost:8080/login" target="_blank" class="admin-btn" data-i18n="nav.login">
+              <i class="fa-solid fa-user-lock"></i> <span data-i18n="nav.login.text">Login</span>
             </a>
           </li>
           <!-- 👆 END ADMIN BUTTON -->
@@ -348,11 +348,12 @@
         </ul>
         <div class="nav-right">
           <div class="flags">
-            <img src="https://flagcdn.com/w40/us.png" alt="USA" class="flag" />
+            <img src="https://flagcdn.com/w40/us.png" alt="USA" class="flag" data-lang="en" />
             <img
               src="https://flagcdn.com/w40/sa.png"
-              alt="Saudi"
+              alt="Arabic"
               class="flag"
+              data-lang="ar"
             />
           </div>
         </div>
@@ -435,7 +436,7 @@
       </video>
       <div class="hero-overlay"></div>
       <div class="hero-content">
-        <h1 class="hero-title">
+        <h1 class="hero-title" id="heroTitle">
           OFFERING <span id="changing-word">DYNAMIC</span> & SMART<br />
           DIGITAL MARKETING SOLUTIONS IN THE MIDDLE EAST
         </h1>
@@ -477,8 +478,8 @@
       <div class="container">
         <div class="mission-grid">
           <div class="mission-content">
-            <h3 class="mission-title">OUR MISSION</h3>
-            <p class="mission-text">
+            <h3 class="mission-title" data-i18n="mission.title">OUR MISSION</h3>
+            <p class="mission-text" data-i18n="mission.text">
               At Emerging Software, our mission is to drive business success
               through innovative digital strategies and superior technology
               solutions. We are committed to providing exceptional service,
@@ -502,7 +503,7 @@
     <!-- Services Section -->
     <section id="services" class="services">
       <div class="container">
-        <h2 class="section-title center">OUR SERVICES</h2>
+        <h2 class="section-title center" data-i18n="services.title">OUR SERVICES</h2>
 
         <div class="services-grid-new">
           <div class="service-card-new">
