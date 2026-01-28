@@ -14,7 +14,7 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   return (
     <>
       <div className="modal-overlay" onClick={onClose} />
-      <div className="modal-content max-w-md w-full mx-4">
+      <div className="modal-content max-w-md w-[calc(100%-2rem)] mx-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-foreground">{title}</h2>
           <button
@@ -54,7 +54,7 @@ export const ConfirmModal = ({
   return (
     <>
       <div className="modal-overlay" onClick={onClose} />
-      <div className="modal-content max-w-sm w-full mx-4 text-center">
+      <div className="modal-content max-w-sm w-[calc(100%-2rem)] mx-4 text-center max-h-[calc(100vh-2rem)] overflow-y-auto">
         <div className={`
           mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-4
           ${type === 'danger' ? 'bg-destructive/20' : 'bg-warning/20'}

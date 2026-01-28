@@ -74,7 +74,66 @@ const Logs = () => {
             </button>
           )}
         </div>
-        
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Date */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Date</label>
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              className="input-field"
+            />
+          </div>
+
+          {/* Admin */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Admin</label>
+            <div className="relative">
+              <User className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <select
+                value={adminFilter}
+                onChange={(e) => setAdminFilter(e.target.value)}
+                className="input-field pl-10"
+              >
+                <option value="">All admins</option>
+                {users.map((u: any) => (
+                  <option key={u.id} value={String(u.id)}>
+                    {u.full_name || u.email || `User ${u.id}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Action */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Action</label>
+            <div className="relative">
+              <Activity className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <select
+                value={actionFilter}
+                onChange={(e) => setActionFilter(e.target.value)}
+                className="input-field pl-10"
+              >
+                <option value="">All actions</option>
+                <option value="create">create</option>
+                <option value="update">update</option>
+                <option value="delete">delete</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Summary */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Results</label>
+            <div className="input-field flex items-center justify-between gap-3">
+              <span className="text-muted-foreground text-sm">Showing</span>
+              <span className="text-foreground font-medium">{filteredLogs.length}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Logs Table */}
