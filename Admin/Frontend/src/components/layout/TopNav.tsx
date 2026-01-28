@@ -2,22 +2,35 @@ import { Menu } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface TopNavProps {
+  title?: string;
+  subtitle?: string;
   onMenuClick?: () => void;
 }
 
-const TopNav = ({ onMenuClick }: TopNavProps) => {
+const TopNav = ({ title, subtitle, onMenuClick }: TopNavProps) => {
   const { user } = useAuth();
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-card px-6 shadow-sm">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-card px-4 sm:px-6 shadow-sm">
       <button
+        type="button"
         onClick={onMenuClick}
         className="md:hidden p-2 text-muted-foreground hover:bg-secondary/50 rounded-lg"
+        aria-label="Open menu"
       >
         <Menu className="h-5 w-5" />
       </button>
 
-      <div className="flex-1" />
+      <div className="min-w-0 flex-1">
+        {title ? (
+          <div className="min-w-0">
+            <h1 className="text-sm sm:text-base font-semibold text-foreground truncate">{title}</h1>
+            {subtitle ? (
+              <p className="text-xs text-muted-foreground truncate">{subtitle}</p>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
 
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-3 pl-4 border-l border-border">

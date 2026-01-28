@@ -71,6 +71,13 @@
   }
 }
 
+@layer base {
+  /* Prevent accidental horizontal scrolling on mobile */
+  html, body {
+    overflow-x: hidden;
+  }
+}
+
 @layer components {
   .stat-card {
     @apply relative overflow-hidden rounded-xl p-6 transition-all duration-300;
